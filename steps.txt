@@ -1,0 +1,132 @@
+1. npm init
+2. config file
+3. webpack file
+4. npm install --save-dev typescript awesome-typescript-loader source-map-loader
+5. npm i -D webpack
+6. npm install --save react react-dom @types/react @types/react-dom
+7. npm i html-webpack-plugin --save-dev 
+8. add to the header to webpack.config: 
+    var HtmlWebpackPlugin = require('html-webpack-plugin');
+9.  create an index.ejs file or html file  in the src folder
+10. add this to webpack config: 
+          plugins: [
+            new HtmlWebpackPlugin({
+              title: 'Projects Demo with html',
+              minify:{
+                collapseWhitespace: true,
+              },
+              hash: true,
+              template: './src/index.html', // Load a custom template (ejs by default see the FAQ for details)
+            })
+          ]
+
+11. Change the output in the webpack file:
+	entry: './src/index.tsx',
+    output: {
+    path: path.resolve(__dirname, "dist"),
+    filename: 'bundle.js'
+  },
+
+/****************************************************************************************************************************/
+add css files. Note: This will create the css file inline in the header of the html file
+1. npm install css-loader --save-dev
+2. npm install style-loader --save-dev
+2.1 Add to the webpack config {test:/\.css$/, use: ['style-loader','css-loader']}
+3. include sass:  
+                  npm install sass-loader node-sass --save-dev 
+3.1 Add to the config: {test:/\.scss$/, use: ['style-loader','css-loader', 'sass-loader']} 
+
+4. Add extract-text-webpack-plugin
+It moves all the required *.css modules in entry chunks into a separate CSS file. So your styles are no longer inlined into the JS bundle, but in a separate CSS file (styles.css). 
+If your total stylesheet volume is big, it will be faster because the CSS bundle is loaded in parallel to the JS bundle.                 
+
+4.1 install it: npm install extract-text-webpack-plugin -D
+4.2 Add this to the config: 
+
+var ExtractTextPlugin = require("extract-text-webpack-plugin");
+
+{
+  test:/\.scss$/, use: ExtractTextPlugin.extract({
+    fallback: 'style-loader',
+    use: ['css-loader', 'sass-loader'],
+    publicPath: '/dist'
+  })
+}
+
+new ExtractTextPlugin({
+    filename: "app.css",
+    disable: false,
+    allChunks: true
+  })
+
+/****************************************************************************************************************************/
+install webpack dev server. Watch mode is by default true. Hot reloading is active. 
+
+1. npm i webpack-dev-server -D
+2. Add this at the top of the file:
+  var path = require("path");
+
+3. In package Json change the script:
+  "scripts": {
+    "dev": "webpack-dev-server",
+    "prod": "webpack -p"
+  },
+
+  4. Change the output:
+      output: {
+    path: path.resolve(__dirname, "dist"),
+    filename: 'app.bundle.js'
+  },
+
+NOTE: Webpack dev server renders the file in memory by default. If we want physical files we need to add more configurations
+
+settings:
+
+devServer: {
+    contentBase: path.join(__dirname, "dist"),
+    compress: true,
+    port: 9000,
+    stats: 'errors-only',
+    open:true
+  },
+
+  1. Set where we want to serve the files
+  2. compress the file
+  3. setting the file
+  4. starts do not show all the notes of webpack
+  5. opens the file automatically
+
+/****************************************************************************************************************************/
+
+Webpack 2 - Multiple templates options and RimRaf
+
+
+/****************************************************************************************************************************/
+
+For production.
+
+change the devtool: 'cheap-module-source-map',
+
+and add new webpack.DefinePlugin({
+              'process.env.NODE_ENV': JSON.stringify('production')
+            })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
